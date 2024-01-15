@@ -1,76 +1,96 @@
 
 let win = 0;
 let lose = 0;
-function game(){
-    for(let x = 0; x < 5; x++){
-        let playerSelection = prompt("Enter the either rock, paper or scissor ?", "rock").toLowerCase();
-        let computerSelection = getComputerChoice().toLowerCase();
-        console.log(playerRound(playerSelection, computerSelection));
-    }
-    if(win=>3){
-        return "You Won! Best of 5 game";
-    }
-    if(lose=> 3){
-        return "You Lose! Best of 5 game"
-    }
-}
 
-function playerRound(playerSelection, computerSelection){
-    // Make input case-insensitive 
+
+let score = document.querySelector('.score');
+
+const winScore = document.createElement('h1');
+const loseScore = document.createElement('h1');
+
+score.appendChild(winScore);
+score.appendChild(loseScore);
+
+
+function playerRound(playerSelection, computerChoice){
     let player = playerSelection;
-    let computer = computerSelection;
-    // Return a string that decalres a win or lose of playerSelection
-    //set switch statement to true
+    let computer = computerChoice;
+    
     switch(true){
-    //Player win [Rock beats Scissor]
     case player === 'rock' && computer === 'scissor':
         win++;
         return "You Won! Rock beats Scissor";
         break;
-    //Player win [Scissor beats Paper]
     case player === 'scissor' && computer === 'paper':
         win++;
         return "You Won! Scissor beats Paper";
         break;
-    //Player win [Paper beat Rock]
     case player === 'paper' && computer === 'rock':
         win++;
         return "You Won! Paper beats Rock";
         break;
-    //Player lose [Rock beats Scissor]
     case computer === 'rock' && player === 'scissor':
         lose++;
         return "You Lose! Rock beats Scissors";
         break;
-    //PLayer lose [Scissor beats Paper]
     case computer === "scissor" && player === 'paper':
         lose++
         return "You Lose! Scissor beats Paper";
         break;
-    //Player lose [Paper beat Rock]
     case computer === "paper" && player === "rock":
         lose++;
         return "You Lose! Paper beats Rock";
         break;
     default:
-        // Replay PlayerSelection Function by asking user input
-        //And generate another computer input
-        computer = getComputerChoice();
-        return playerRound(player, computer);
+        //It was a tie match so needed
+        return 'It was a tie, Play again';
     }
 }
 
 function getComputerChoice(){
-    //Getting random number between 3 number [0, 1, 2]
-    let randomNum = Math.floor(Math.random() * 3);
-    //Three options for the desired output
-    let options = "rock,paper,scissor";
-    // Use split() string method to convert options string into array 
-    // and return array split by comma
-    let arr = options.split(",");
+    let randomChoiceIndex = Math.floor(Math.random() * 3);
+    let choices = "rock,paper,scissor";
+    let choiceArray = choices.split(",");
 
-    //Return array at with randomNum index number
-    return arr[randomNum].toLowerCase();
+    return choiceArray[randomChoiceIndex];
 }
 
-console.log(game());
+
+let buttons = document.querySelectorAll('button');
+
+let rock = document.querySelector('#rock');
+let paper = document.querySelector('#paper');
+let scissor = document.querySelector('#scissor');
+
+buttons.forEach(button => {
+    button.addEventListener('click', (e) => {
+        let playerSelection = e.target.id;
+        let result = playerRound(playerSelection, getComputerChoice());
+
+        winScore.textContent =  `Your winning score: ${win}`;
+        loseScore.textContent = `Your losing score: ${lose}`;
+
+        if(win >= 5) {
+            winScore.textContent = 'You won!';
+            loseScore.textContent = '';
+            win = 0;
+            lose = 0;
+        }
+
+        if(lose >= 5){
+            winScore.textContent = '';
+            loseScore.textContent = 'You lose';
+            lose = 0;
+            win = 0;
+        }
+
+        let text = document.querySelector('.result');
+        const p = document.createElement('p');
+        p.textContent = result;
+
+        text.appendChild(p);
+
+    });
+})
+
+
